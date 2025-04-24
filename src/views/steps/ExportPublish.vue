@@ -441,4 +441,8 @@ onMounted(() => {
 .dark-mode .testimonial-item {
   background-color: var(--color-neutral-200);
 }
+
+.dark-mode .btn-copy {
+  color: white;
+}
 </style>
