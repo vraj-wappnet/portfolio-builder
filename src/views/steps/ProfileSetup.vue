@@ -44,7 +44,7 @@ const handleCropChange = (result: any) => {
   cropResult.value = result; // Store the cropper result without closing modal
 };
 
-// Apply crop and close modal
+// Apply crop and save to store
 const applyCrop = () => {
   if (!cropResult.value) return;
 
@@ -72,12 +72,18 @@ const applyCrop = () => {
 
     previewImage.value = canvas.toDataURL("image/jpeg");
     showCropper.value = false; // Close modal after applying crop
+
+    // Save the cropped image to the store
+    portfolioStore.updateProfile({
+      ...form,
+      avatar: previewImage.value,
+    });
   };
 
   image.src = imageSource.value;
 };
 
-// Form validation and other logic remain unchanged
+// Form validation
 const errors = ref({
   fullName: "",
   tagline: "",
@@ -229,7 +235,7 @@ onMounted(() => {
             v-model="form.location"
             type="text"
             class="form-input"
-            placeholder="Toronto, Canada"
+            placeholder="India"
           />
         </div>
 

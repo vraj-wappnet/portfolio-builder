@@ -74,19 +74,6 @@ export const usePortfolioStore = defineStore("portfolio", () => {
   const lastUpdated = ref<number | null>(null);
   const draftSaved = ref(false);
 
-  //preview
-  // In your portfolio store (stores/portfolio.ts)
-  const isPreviewComplete = computed(() => {
-    // Consider preview complete if at least one section is complete
-    return (
-      isProfileComplete.value ||
-      isServicesComplete.value ||
-      isProjectsComplete.value ||
-      isTestimonialsComplete.value ||
-      isAvailabilityComplete.value
-    );
-  });
-
   // Load data from localStorage on initialization
   const loadSavedData = () => {
     const savedData = localStorage.getItem("portfolioData");
