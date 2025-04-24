@@ -1,134 +1,154 @@
 <script setup lang="ts">
-import { reactive, computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { usePortfolioStore } from '../../stores/portfolio'
+import { reactive, computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { usePortfolioStore } from "../../stores/portfolio";
 
-const portfolioStore = usePortfolioStore()
-const router = useRouter()
+const portfolioStore = usePortfolioStore();
+const router = useRouter();
 
 // State for currently editing section
-const editingSection = ref('')
+const editingSection = ref("");
 
 // Get data from store
-const profile = computed(() => portfolioStore.profile)
-const services = computed(() => portfolioStore.services)
-const projects = computed(() => portfolioStore.projects)
-const testimonials = computed(() => portfolioStore.testimonials)
-const availability = computed(() => portfolioStore.availability)
-const stats = computed(() => portfolioStore.portfolioStats)
+const profile = computed(() => portfolioStore.profile);
+const services = computed(() => portfolioStore.services);
+const projects = computed(() => portfolioStore.projects);
+const testimonials = computed(() => portfolioStore.testimonials);
+const availability = computed(() => portfolioStore.availability);
+const stats = computed(() => portfolioStore.portfolioStats);
 
 // Format time for display
 const formatTime = (time: string) => {
-  const [hours, minutes] = time.split(':')
-  const hour = parseInt(hours)
-  const period = hour >= 12 ? 'PM' : 'AM'
-  const formattedHour = hour % 12 === 0 ? 12 : hour % 12
-  return `${formattedHour}:${minutes} ${period}`
-}
+  const [hours, minutes] = time.split(":");
+  const hour = parseInt(hours);
+  const period = hour >= 12 ? "PM" : "AM";
+  const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${formattedHour}:${minutes} ${period}`;
+};
 
 // Compute availability summary
 const availabilitySummary = computed(() => {
-  if (availability.value.slots.length === 0) return 'Not specified'
-  
+  if (availability.value.slots.length === 0) return "Not specified";
+
   // Group slots by day
-  const dayMap = new Map<string, string[]>()
-  
-  availability.value.slots.forEach(slot => {
+  const dayMap = new Map<string, string[]>();
+
+  availability.value.slots.forEach((slot) => {
     if (!dayMap.has(slot.day)) {
-      dayMap.set(slot.day, [])
+      dayMap.set(slot.day, []);
     }
-    dayMap.get(slot.day)?.push(`${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`)
-  })
-  
+    dayMap
+      .get(slot.day)
+      ?.push(`${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`);
+  });
+
   // Convert to readable format
-  const parts = []
+  const parts = [];
   for (const [day, times] of dayMap.entries()) {
-    parts.push(`${day}: ${times.join(', ')}`)
+    parts.push(`${day}: ${times.join(", ")}`);
   }
-  
-  return parts.join(' • ')
-})
+
+  return parts.join(" • ");
+});
 
 // Edit section
 const editSection = (section: string) => {
-  router.push(`/portfolio-builder/${section}`)
-}
+  router.push(`/portfolio-builder/${section}`);
+};
 
 // Format communication preference
 const communicationPreference = computed(() => {
   switch (availability.value.preferredCommunication) {
-    case 'email': return 'Email'
-    case 'call': return 'Phone Call'
-    case 'zoom': return 'Video Call (Zoom)'
-    default: return 'Not specified'
+    case "email":
+      return "Email";
+    case "call":
+      return "Phone Call";
+    case "zoom":
+      return "Video Call (Zoom)";
+    default:
+      return "Not specified";
   }
-})
+});
 
 // Statistics
 const portfolioStatsSummary = computed(() => {
-  const parts = []
-  
-  if (services.value.length) {
-    parts.push(`${services.value.length} Service${services.value.length > 1 ? 's' : ''}`)
-  }
-  
-  if (projects.value.length) {
-    parts.push(`${projects.value.length} Project${projects.value.length > 1 ? 's' : ''}`)
-  }
-  
-  if (testimonials.value.length) {
-    parts.push(`${testimonials.value.length} Testimonial${testimonials.value.length > 1 ? 's' : ''}`)
-  }
-  
-  if (testimonials.value.length) {
-    parts.push(`${stats.value.avgRating}★ Avg Rating`)
-  }
-  
-  return parts.join(' • ')
-})
+  const parts = [];
 
-// Continue to export
-const goToExport = () => {
-  router.push('/portfolio-builder/export')
-}
+  if (services.value.length) {
+    parts.push(
+      `${services.value.length} Service${services.value.length > 1 ? "s" : ""}`
+    );
+  }
+
+  if (projects.value.length) {
+    parts.push(
+      `${projects.value.length} Project${projects.value.length > 1 ? "s" : ""}`
+    );
+  }
+
+  if (testimonials.value.length) {
+    parts.push(
+      `${testimonials.value.length} Testimonial${
+        testimonials.value.length > 1 ? "s" : ""
+      }`
+    );
+  }
+
+  if (testimonials.value.length) {
+    parts.push(`${stats.value.avgRating}★ Avg Rating`);
+  }
+
+  return parts.join(" • ");
+});
 </script>
 
 <template>
   <div class="portfolio-preview">
     <h2>Portfolio Preview</h2>
     <p class="subtitle">Review your portfolio and make any final edits.</p>
-    
+
     <div class="stats-summary">
       <h3>Portfolio Summary</h3>
       <p v-if="portfolioStatsSummary">{{ portfolioStatsSummary }}</p>
       <p v-else>No content added yet</p>
     </div>
-    
+
     <div class="preview-content">
       <!-- Profile Section -->
       <section class="preview-section">
         <div class="section-header">
           <h3>Profile</h3>
-          <button @click="editSection('profile-setup')" class="btn-edit">Edit</button>
+          <button @click="editSection('profile-setup')" class="btn-edit">
+            Edit
+          </button>
         </div>
-        
+
         <div class="profile-preview">
           <div class="profile-avatar">
-            <img v-if="profile.avatar" :src="profile.avatar" alt="Profile avatar" />
+            <img
+              v-if="profile.avatar"
+              :src="profile.avatar"
+              alt="Profile avatar"
+            />
             <div v-else class="avatar-placeholder">👤</div>
           </div>
-          
+
           <div class="profile-details">
-            <h2 class="profile-name">{{ profile.fullName || 'Your Name' }}</h2>
-            <p class="profile-tagline">{{ profile.tagline || 'Your professional tagline' }}</p>
-            
+            <h2 class="profile-name">{{ profile.fullName || "Your Name" }}</h2>
+            <p class="profile-tagline">
+              {{ profile.tagline || "Your professional tagline" }}
+            </p>
+
             <div v-if="profile.location" class="profile-location">
               📍 {{ profile.location }}
             </div>
-            
-            <div v-if="Object.values(profile.socialLinks).some(Boolean)" class="profile-social">
-              <a 
-                v-if="profile.socialLinks.linkedin" 
+
+            <div
+              v-if="Object.values(profile.socialLinks).some(Boolean)"
+              class="profile-social"
+            >
+              <a
+                v-if="profile.socialLinks.linkedin"
                 :href="profile.socialLinks.linkedin"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -136,8 +156,8 @@ const goToExport = () => {
               >
                 LinkedIn
               </a>
-              <a 
-                v-if="profile.socialLinks.github" 
+              <a
+                v-if="profile.socialLinks.github"
                 :href="profile.socialLinks.github"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -145,8 +165,8 @@ const goToExport = () => {
               >
                 GitHub
               </a>
-              <a 
-                v-if="profile.socialLinks.website" 
+              <a
+                v-if="profile.socialLinks.website"
                 :href="profile.socialLinks.website"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -158,21 +178,28 @@ const goToExport = () => {
           </div>
         </div>
       </section>
-      
+
       <!-- Services Section -->
       <section class="preview-section">
         <div class="section-header">
           <h3>Services</h3>
-          <button @click="editSection('services')" class="btn-edit">Edit</button>
+          <button @click="editSection('services')" class="btn-edit">
+            Edit
+          </button>
         </div>
-        
+
         <div v-if="services.length > 0" class="services-preview">
-          <div v-for="service in services" :key="service.id" class="service-preview-card">
+          <div
+            v-for="service in services"
+            :key="service.id"
+            class="service-preview-card"
+          >
             <h4>{{ service.title }}</h4>
             <p>{{ service.description }}</p>
             <div class="service-meta">
               <span class="service-price">
-                {{ service.pricing.amount }} USD / {{ service.pricing.type === 'hourly' ? 'hour' : 'project' }}
+                {{ service.pricing.amount }} USD /
+                {{ service.pricing.type === "hourly" ? "hour" : "project" }}
               </span>
               <span class="service-delivery">
                 Delivery: {{ service.deliveryTime }}
@@ -184,16 +211,22 @@ const goToExport = () => {
           <p>No services added yet</p>
         </div>
       </section>
-      
+
       <!-- Projects Section -->
       <section class="preview-section">
         <div class="section-header">
           <h3>Projects</h3>
-          <button @click="editSection('projects')" class="btn-edit">Edit</button>
+          <button @click="editSection('projects')" class="btn-edit">
+            Edit
+          </button>
         </div>
-        
+
         <div v-if="projects.length > 0" class="projects-preview">
-          <div v-for="project in projects" :key="project.id" class="project-preview-card">
+          <div
+            v-for="project in projects"
+            :key="project.id"
+            class="project-preview-card"
+          >
             <div v-if="project.images.length > 0" class="project-images">
               <img :src="project.images[0]" alt="Project thumbnail" />
             </div>
@@ -201,7 +234,11 @@ const goToExport = () => {
               <h4>{{ project.name }}</h4>
               <p>{{ project.description }}</p>
               <div class="tech-stack">
-                <span v-for="tech in project.techStack" :key="tech" class="tech-tag">
+                <span
+                  v-for="tech in project.techStack"
+                  :key="tech"
+                  class="tech-tag"
+                >
                   {{ tech }}
                 </span>
               </div>
@@ -212,25 +249,34 @@ const goToExport = () => {
           <p>No projects added yet</p>
         </div>
       </section>
-      
+
       <!-- Testimonials Section -->
       <section class="preview-section">
         <div class="section-header">
           <h3>Testimonials</h3>
-          <button @click="editSection('testimonials')" class="btn-edit">Edit</button>
+          <button @click="editSection('testimonials')" class="btn-edit">
+            Edit
+          </button>
         </div>
-        
+
         <div v-if="testimonials.length > 0" class="testimonials-preview">
-          <div v-for="testimonial in testimonials" :key="testimonial.id" class="testimonial-preview-card">
+          <div
+            v-for="testimonial in testimonials"
+            :key="testimonial.id"
+            class="testimonial-preview-card"
+          >
             <blockquote>
               <p>"{{ testimonial.feedback }}"</p>
               <footer>
                 <div class="testimonial-author">
                   <strong>{{ testimonial.clientName }}</strong>
-                  <span v-if="testimonial.company">, {{ testimonial.company }}</span>
+                  <span v-if="testimonial.company"
+                    >, {{ testimonial.company }}</span
+                  >
                 </div>
                 <div class="testimonial-rating">
-                  {{ '★'.repeat(testimonial.rating) }}{{ '☆'.repeat(5 - testimonial.rating) }}
+                  {{ "★".repeat(testimonial.rating)
+                  }}{{ "☆".repeat(5 - testimonial.rating) }}
                 </div>
               </footer>
             </blockquote>
@@ -240,32 +286,30 @@ const goToExport = () => {
           <p>No testimonials added yet</p>
         </div>
       </section>
-      
+
       <!-- Availability Section -->
       <section class="preview-section">
         <div class="section-header">
           <h3>Availability</h3>
-          <button @click="editSection('availability')" class="btn-edit">Edit</button>
+          <button @click="editSection('availability')" class="btn-edit">
+            Edit
+          </button>
         </div>
-        
+
         <div class="availability-preview">
           <div class="availability-item">
-            <strong>Timezone:</strong> {{ availability.timezone || 'Not specified' }}
+            <strong>Timezone:</strong>
+            {{ availability.timezone || "Not specified" }}
           </div>
           <div class="availability-item">
             <strong>Schedule:</strong> {{ availabilitySummary }}
           </div>
           <div class="availability-item">
-            <strong>Preferred Communication:</strong> {{ communicationPreference }}
+            <strong>Preferred Communication:</strong>
+            {{ communicationPreference }}
           </div>
         </div>
       </section>
-    </div>
-    
-    <div class="preview-actions">
-      <button @click="goToExport" class="btn btn-primary">
-        Continue to Export
-      </button>
     </div>
   </div>
 </template>
@@ -503,27 +547,21 @@ const goToExport = () => {
   background-color: var(--color-neutral-100);
 }
 
-.preview-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-5);
-}
-
 @media (max-width: 768px) {
   .profile-preview {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .profile-social {
     justify-content: center;
   }
-  
+
   .project-preview-card {
     flex-direction: column;
   }
-  
+
   .project-images {
     width: 100%;
     height: 150px;
@@ -551,5 +589,9 @@ const goToExport = () => {
 .dark-mode .project-preview-card,
 .dark-mode .testimonial-preview-card {
   border-color: var(--color-neutral-300);
+}
+
+.dark-mode .btn-edit {
+  color: white;
 }
 </style>

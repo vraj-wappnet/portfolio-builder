@@ -357,7 +357,7 @@ onMounted(() => {
 
 .terms-checkbox {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-2);
   cursor: pointer;
 }

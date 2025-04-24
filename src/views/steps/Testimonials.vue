@@ -1,157 +1,177 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { usePortfolioStore, type Testimonial } from '../../stores/portfolio'
+import { ref, reactive } from "vue";
+import { usePortfolioStore, type Testimonial } from "../../stores/portfolio";
 
-const portfolioStore = usePortfolioStore()
+const portfolioStore = usePortfolioStore();
 
 // State for adding/editing a testimonial
-const isEditing = ref(false)
-const editingTestimonialId = ref('')
-const showForm = ref(false)
+const isEditing = ref(false);
+const editingTestimonialId = ref("");
+const showForm = ref(false);
 
 // New testimonial form
 const newTestimonial = reactive<Testimonial>({
-  id: '',
-  clientName: '',
-  company: '',
+  id: "",
+  clientName: "",
+  company: "",
   rating: 5,
-  feedback: ''
-})
+  feedback: "",
+});
 
 const errors = reactive({
-  clientName: '',
-  company: '',
-  rating: '',
-  feedback: ''
-})
+  clientName: "",
+  company: "",
+  rating: "",
+  feedback: "",
+});
 
 const resetForm = () => {
-  newTestimonial.id = ''
-  newTestimonial.clientName = ''
-  newTestimonial.company = ''
-  newTestimonial.rating = 5
-  newTestimonial.feedback = ''
-  isEditing.value = false
-  editingTestimonialId.value = ''
-  Object.keys(errors).forEach(key => {
-    errors[key as keyof typeof errors] = ''
-  })
-}
+  newTestimonial.id = "";
+  newTestimonial.clientName = "";
+  newTestimonial.company = "";
+  newTestimonial.rating = 5;
+  newTestimonial.feedback = "";
+  isEditing.value = false;
+  editingTestimonialId.value = "";
+  Object.keys(errors).forEach((key) => {
+    errors[key as keyof typeof errors] = "";
+  });
+};
 
 const validateForm = () => {
-  let isValid = true
-  
+  let isValid = true;
+
   if (!newTestimonial.clientName.trim()) {
-    errors.clientName = 'Client name is required'
-    isValid = false
+    errors.clientName = "Client name is required";
+    isValid = false;
   }
-  
+
   if (!newTestimonial.feedback.trim()) {
-    errors.feedback = 'Feedback is required'
-    isValid = false
+    errors.feedback = "Feedback is required";
+    isValid = false;
   }
-  
-  return isValid
-}
+
+  return isValid;
+};
 
 const addTestimonial = () => {
-  if (!validateForm()) return
-  
+  if (!validateForm()) return;
+
   if (isEditing.value) {
-    portfolioStore.updateTestimonial(editingTestimonialId.value, { ...newTestimonial })
+    portfolioStore.updateTestimonial(editingTestimonialId.value, {
+      ...newTestimonial,
+    });
   } else {
     portfolioStore.addTestimonial({
       ...newTestimonial,
-      id: Date.now().toString()
-    })
+      id: Date.now().toString(),
+    });
   }
-  
-  resetForm()
-  showForm.value = false
-}
+
+  resetForm();
+  showForm.value = false;
+};
 
 const cancelForm = () => {
-  resetForm()
-  showForm.value = false
-}
+  resetForm();
+  showForm.value = false;
+};
 
 const editTestimonial = (testimonial: Testimonial) => {
-  Object.assign(newTestimonial, { ...testimonial })
-  isEditing.value = true
-  editingTestimonialId.value = testimonial.id
-  showForm.value = true
-}
+  Object.assign(newTestimonial, { ...testimonial });
+  isEditing.value = true;
+  editingTestimonialId.value = testimonial.id;
+  showForm.value = true;
+};
 
 const deleteTestimonial = (testimonialId: string) => {
-  if (confirm('Are you sure you want to delete this testimonial?')) {
-    portfolioStore.removeTestimonial(testimonialId)
+  if (confirm("Are you sure you want to delete this testimonial?")) {
+    portfolioStore.removeTestimonial(testimonialId);
   }
-}
+};
 
 const startAddingTestimonial = () => {
-  showForm.value = true
-  resetForm()
-}
+  showForm.value = true;
+  resetForm();
+};
 
 // Star rating display
 const getRatingStars = (rating: number) => {
-  return '★'.repeat(rating) + '☆'.repeat(5 - rating)
-}
+  return "★".repeat(rating) + "☆".repeat(5 - rating);
+};
 
 // Update rating
 const updateRating = (value: number) => {
-  newTestimonial.rating = value
-}
+  newTestimonial.rating = value;
+};
 </script>
 
 <template>
   <div class="testimonials">
     <h2>Client Testimonials</h2>
     <p class="subtitle">Add testimonials from your satisfied clients.</p>
-    
-    <div v-if="portfolioStore.testimonials.length > 0" class="testimonials-list">
-      <div v-for="testimonial in portfolioStore.testimonials" :key="testimonial.id" class="testimonial-card">
+
+    <div
+      v-if="portfolioStore.testimonials.length > 0"
+      class="testimonials-list"
+    >
+      <div
+        v-for="testimonial in portfolioStore.testimonials"
+        :key="testimonial.id"
+        class="testimonial-card"
+      >
         <div class="testimonial-header">
           <div class="client-info">
             <h3>{{ testimonial.clientName }}</h3>
-            <p v-if="testimonial.company" class="company">{{ testimonial.company }}</p>
+            <p v-if="testimonial.company" class="company">
+              {{ testimonial.company }}
+            </p>
           </div>
           <div class="testimonial-actions">
-            <button @click="editTestimonial(testimonial)" class="btn-icon" aria-label="Edit testimonial">
+            <button
+              @click="editTestimonial(testimonial)"
+              class="btn-icon"
+              aria-label="Edit testimonial"
+            >
               ✏️
             </button>
-            <button @click="deleteTestimonial(testimonial.id)" class="btn-icon" aria-label="Delete testimonial">
+            <button
+              @click="deleteTestimonial(testimonial.id)"
+              class="btn-icon"
+              aria-label="Delete testimonial"
+            >
               🗑️
             </button>
           </div>
         </div>
-        
+
         <div class="rating">
           <span class="stars" :title="`${testimonial.rating} out of 5 stars`">
             {{ getRatingStars(testimonial.rating) }}
           </span>
         </div>
-        
-        <blockquote class="feedback">
-          "{{ testimonial.feedback }}"
-        </blockquote>
+
+        <blockquote class="feedback">"{{ testimonial.feedback }}"</blockquote>
       </div>
     </div>
-    
+
     <div v-else class="empty-state">
       <div class="empty-icon">⭐</div>
       <h3>No Testimonials Added Yet</h3>
-      <p>Add testimonials from your clients to build trust with potential new clients.</p>
+      <p>
+        Add testimonials from your clients to build trust with potential new
+        clients.
+      </p>
     </div>
-    
+
     <div v-if="!showForm" class="add-testimonial">
       <button @click="startAddingTestimonial" class="btn btn-primary">
         Add Testimonial
       </button>
     </div>
-    
+
     <div v-if="showForm" class="testimonial-form-container">
-      <h3>{{ isEditing ? 'Edit' : 'Add' }} Testimonial</h3>
+      <h3>{{ isEditing ? "Edit" : "Add" }} Testimonial</h3>
       <form @submit.prevent="addTestimonial" class="testimonial-form">
         <div class="form-group">
           <label for="client-name" class="form-label">Client Name*</label>
@@ -160,12 +180,14 @@ const updateRating = (value: number) => {
             v-model="newTestimonial.clientName"
             type="text"
             class="form-input"
-            :class="{ 'error': errors.clientName }"
+            :class="{ error: errors.clientName }"
             placeholder="John Smith"
           />
-          <div v-if="errors.clientName" class="form-error">{{ errors.clientName }}</div>
+          <div v-if="errors.clientName" class="form-error">
+            {{ errors.clientName }}
+          </div>
         </div>
-        
+
         <div class="form-group">
           <label for="company" class="form-label">Company</label>
           <input
@@ -176,42 +198,44 @@ const updateRating = (value: number) => {
             placeholder="Acme Inc."
           />
         </div>
-        
+
         <div class="form-group">
           <label class="form-label">Rating</label>
           <div class="rating-input">
-            <button 
-              v-for="star in 5" 
-              :key="star" 
+            <button
+              v-for="star in 5"
+              :key="star"
               type="button"
               @click="updateRating(star)"
               class="star-btn"
-              :class="{ 'active': star <= newTestimonial.rating }"
+              :class="{ active: star <= newTestimonial.rating }"
             >
               ★
             </button>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="feedback" class="form-label">Client Feedback*</label>
           <textarea
             id="feedback"
             v-model="newTestimonial.feedback"
             class="form-textarea"
-            :class="{ 'error': errors.feedback }"
+            :class="{ error: errors.feedback }"
             placeholder="What did your client say about your work?"
             rows="4"
           ></textarea>
-          <div v-if="errors.feedback" class="form-error">{{ errors.feedback }}</div>
+          <div v-if="errors.feedback" class="form-error">
+            {{ errors.feedback }}
+          </div>
         </div>
-        
+
         <div class="form-actions">
           <button type="button" @click="cancelForm" class="btn btn-outline">
             Cancel
           </button>
           <button type="submit" class="btn btn-primary">
-            {{ isEditing ? 'Update' : 'Add' }} Testimonial
+            {{ isEditing ? "Update" : "Add" }} Testimonial
           </button>
         </div>
       </form>
@@ -366,5 +390,10 @@ const updateRating = (value: number) => {
 .dark-mode .empty-state,
 .dark-mode .testimonial-form-container {
   background-color: var(--color-neutral-200);
+}
+
+.dark-mode .form-input,
+.dark-mode .form-textarea {
+  color: white;
 }
 </style>

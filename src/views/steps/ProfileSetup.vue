@@ -166,7 +166,7 @@ onMounted(() => {
         <div class="avatar-preview" :class="{ 'has-image': previewImage }">
           <img v-if="previewImage" :src="previewImage" alt="Avatar Preview" />
           <div v-else class="avatar-placeholder">
-            <span class="avatar-icon">👤</span>
+            <span class="avatar-icon">🧑🏽‍🦳</span>
           </div>
         </div>
         <div class="avatar-controls">
@@ -431,5 +431,10 @@ onMounted(() => {
 
 .dark-mode .modal-content {
   background-color: var(--color-neutral-100);
+}
+
+.dark-mode .form-input,
+.dark-mode .form-textarea {
+  color: white;
 }
 </style>

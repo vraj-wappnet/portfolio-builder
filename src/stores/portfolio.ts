@@ -133,7 +133,7 @@ export const usePortfolioStore = defineStore("portfolio", () => {
   });
 
   const isTestimonialsComplete = computed(() => {
-    return true; // Optional step
+    return testimonials.value.length > 0; // Only complete if there are testimonials
   });
 
   const isAvailabilityComplete = computed(() => {
