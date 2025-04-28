@@ -314,76 +314,95 @@ const portfolioStatsSummary = computed(() => {
 </template>
 
 <style scoped>
+/* Enhanced UI styles */
 .portfolio-preview {
-  max-width: 800px;
+  max-width: 900px; /* Increased width for better layout */
   margin: 0 auto;
+  padding: var(--space-4);
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .subtitle {
-  color: var(--color-neutral-600);
-  margin-bottom: var(--space-4);
+  color: var(--color-neutral-700);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-5);
 }
 
 .stats-summary {
-  background-color: var(--color-primary-light);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
   color: white;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4);
   border-radius: var(--radius-lg);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-md);
 }
 
 .stats-summary h3 {
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xl);
 }
 
 .preview-section {
-  background-color: white;
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.preview-section:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4);
   background-color: var(--color-neutral-100);
   border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .section-header h3 {
   margin: 0;
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
+  font-size: var(--text-lg);
 }
 
 .btn-edit {
-  background-color: var(--color-neutral-200);
+  background-color: var(--color-primary);
+  color: white;
   border: none;
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--text-sm);
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .btn-edit:hover {
-  background-color: var(--color-neutral-300);
+  background-color: var(--color-primary-dark);
+  transform: scale(1.05);
 }
 
 .profile-preview {
-  padding: var(--space-4);
+  padding: var(--space-5);
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  align-items: center;
 }
 
 .profile-avatar {
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .profile-avatar img {
@@ -399,7 +418,7 @@ const portfolioStatsSummary = computed(() => {
   align-items: center;
   justify-content: center;
   background-color: var(--color-neutral-200);
-  font-size: 3rem;
+  font-size: 3.5rem;
   color: var(--color-neutral-600);
 }
 
@@ -408,29 +427,33 @@ const portfolioStatsSummary = computed(() => {
 }
 
 .profile-name {
-  margin: 0 0 var(--space-1) 0;
+  margin: 0 0 var(--space-2) 0;
   color: var(--color-primary);
+  font-size: var(--text-xl);
 }
 
 .profile-tagline {
   margin: 0 0 var(--space-3) 0;
   color: var(--color-neutral-700);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
 }
 
 .profile-location {
   margin-bottom: var(--space-2);
   color: var(--color-neutral-600);
+  font-size: var(--text-sm);
 }
 
 .profile-social {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 .social-link {
   color: var(--color-primary);
   text-decoration: none;
+  font-size: var(--text-sm);
+  font-weight: 500;
 }
 
 .social-link:hover {
@@ -441,48 +464,53 @@ const portfolioStatsSummary = computed(() => {
 .projects-preview,
 .testimonials-preview,
 .availability-preview {
-  padding: var(--space-4);
+  padding: var(--space-5);
 }
 
 .service-preview-card,
 .project-preview-card,
 .testimonial-preview-card {
-  padding: var(--space-3);
-  margin-bottom: var(--space-3);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
   border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-md);
+  background-color: var(--color-neutral-50);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.service-preview-card:last-child,
-.project-preview-card:last-child,
-.testimonial-preview-card:last-child {
-  margin-bottom: 0;
+.service-preview-card:hover,
+.project-preview-card:hover,
+.testimonial-preview-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .service-meta {
   display: flex;
   justify-content: space-between;
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   font-size: var(--text-sm);
   color: var(--color-neutral-600);
 }
 
 .service-price {
   color: var(--color-primary);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .project-preview-card {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 .project-images {
-  width: 120px;
-  height: 80px;
+  width: 140px;
+  height: 100px;
   border-radius: var(--radius-sm);
   overflow: hidden;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .project-images img {
@@ -496,19 +524,20 @@ const portfolioStatsSummary = computed(() => {
 }
 
 .project-preview-content h4 {
-  margin: 0 0 var(--space-1) 0;
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-md);
 }
 
 .tech-stack {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
-  margin-top: var(--space-2);
+  gap: var(--space-2);
+  margin-top: var(--space-3);
 }
 
 .tech-tag {
   background-color: var(--color-neutral-200);
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
   color: var(--color-neutral-700);
@@ -517,10 +546,11 @@ const portfolioStatsSummary = computed(() => {
 .testimonial-preview-card blockquote {
   margin: 0;
   font-style: italic;
+  font-size: var(--text-md);
 }
 
 .testimonial-preview-card footer {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -529,10 +559,12 @@ const portfolioStatsSummary = computed(() => {
 .testimonial-rating {
   color: var(--color-warning);
   letter-spacing: 2px;
+  font-size: var(--text-sm);
 }
 
 .availability-item {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
 }
 
 .availability-item:last-child {
@@ -540,10 +572,12 @@ const portfolioStatsSummary = computed(() => {
 }
 
 .empty-preview {
-  padding: var(--space-4);
+  padding: var(--space-5);
   text-align: center;
   color: var(--color-neutral-600);
   background-color: var(--color-neutral-100);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {
@@ -563,7 +597,7 @@ const portfolioStatsSummary = computed(() => {
 
   .project-images {
     width: 100%;
-    height: 150px;
+    height: 180px;
   }
 }
 

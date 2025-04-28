@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { usePortfolioStore, type Project } from "../../stores/portfolio";
+import { PencilSquareIcon, TrashIcon, PhotoIcon, PlusIcon, XMarkIcon, CloudArrowUpIcon, WrenchIcon } from "@heroicons/vue/24/outline";
 
 const portfolioStore = usePortfolioStore();
 
@@ -179,7 +180,9 @@ const startAddingProject = () => {
             :src="project.images[0]"
             alt="Project thumbnail"
           />
-          <div v-else class="image-placeholder">No image</div>
+          <div v-else class="image-placeholder">
+            <PhotoIcon class="placeholder-icon" />
+          </div>
           <div class="image-count" v-if="project.images.length > 1">
             +{{ project.images.length - 1 }}
           </div>
@@ -193,14 +196,14 @@ const startAddingProject = () => {
                 class="btn-icon"
                 aria-label="Edit project"
               >
-                ✏️
+                <PencilSquareIcon class="icon edit-icon" />
               </button>
               <button
                 @click="deleteProject(project.id)"
                 class="btn-icon"
                 aria-label="Delete project"
               >
-                🗑️
+                <TrashIcon class="icon delete-icon" />
               </button>
             </div>
           </div>
@@ -219,14 +222,16 @@ const startAddingProject = () => {
     </div>
 
     <div v-else class="empty-state">
-      <div class="empty-icon">🖼️</div>
+      <div class="empty-icon">
+        <PhotoIcon class="empty-state-icon" />
+      </div>
       <h3>No Projects Added Yet</h3>
       <p>Add your first project to showcase your portfolio.</p>
     </div>
 
     <div v-if="!showForm" class="add-project">
       <button @click="startAddingProject" class="btn btn-primary">
-        Add Project
+        <PlusIcon class="btn-icon" /> Add Project
       </button>
     </div>
 
@@ -250,6 +255,7 @@ const startAddingProject = () => {
           <label class="form-label">Project Images* (Max 5)</label>
           <div class="image-upload-container">
             <label for="image-upload" class="image-upload-btn">
+              <CloudArrowUpIcon class="upload-icon" />
               <span>Upload Images</span>
             </label>
             <input
@@ -276,14 +282,17 @@ const startAddingProject = () => {
                 class="remove-image"
                 aria-label="Remove image"
               >
-                ✕
+                <XMarkIcon class="remove-icon" />
               </button>
             </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tech Stack*</label>
+          <label class="form-label">
+            <WrenchIcon class="label-icon" />
+            Tech Stack*
+          </label>
           <div class="tech-input">
             <input
               v-model="techInput"
@@ -293,7 +302,7 @@ const startAddingProject = () => {
               @keydown.enter.prevent="addTechItem"
             />
             <button type="button" @click="addTechItem" class="btn btn-primary">
-              Add
+              <PlusIcon class="btn-icon" /> Add
             </button>
           </div>
           <div v-if="errors.techStack" class="form-error">
@@ -313,7 +322,7 @@ const startAddingProject = () => {
                 class="remove-tech"
                 aria-label="Remove technology"
               >
-                ✕
+                <XMarkIcon class="remove-icon-sm" />
               </button>
             </span>
           </div>
@@ -507,7 +516,8 @@ const startAddingProject = () => {
 }
 
 .image-upload-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: var(--space-2) var(--space-3);
   background-color: var(--color-neutral-300);
   border-radius: var(--radius-md);
@@ -631,4 +641,91 @@ const startAddingProject = () => {
 .dark-mode .form-textarea {
   color: white;
 }
+
+.icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.edit-icon {
+  color: var(--color-blue-600);
+  transition: color 0.2s;
+}
+
+.btn-icon:hover .edit-icon {
+  color: var(--color-blue-800);
+}
+
+.delete-icon {
+  color: var(--color-red-600);
+  transition: color 0.2s;
+}
+
+.btn-icon:hover .delete-icon {
+  color: var(--color-red-800);
+}
+
+.placeholder-icon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--color-neutral-400);
+}
+
+.empty-state-icon {
+  width: 4rem;
+  height: 4rem;
+  color: var(--color-primary);
+}
+
+.btn-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.dark-mode .edit-icon {
+  color: var(--color-blue-400);
+}
+
+.dark-mode .btn-icon:hover .edit-icon {
+  color: var(--color-blue-300);
+}
+
+.dark-mode .delete-icon {
+  color: var(--color-red-400);
+}
+
+.dark-mode .btn-icon:hover .delete-icon {
+  color: var(--color-red-300);
+}
+
+.upload-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.image-upload-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.remove-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.remove-icon-sm {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+.label-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  color: var(--color-primary);
+}
+
 </style>

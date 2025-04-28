@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { usePortfolioStore, type Testimonial } from "../../stores/portfolio";
+import '@fortawesome/fontawesome-free/css/all.css';
 
 const portfolioStore = usePortfolioStore();
 
@@ -108,7 +109,9 @@ const updateRating = (value: number) => {
 
 <template>
   <div class="testimonials">
-    <h2>Client Testimonials</h2>
+    <h2>
+      Client Testimonials
+    </h2> 
     <p class="subtitle">Add testimonials from your satisfied clients.</p>
 
     <div
@@ -122,9 +125,9 @@ const updateRating = (value: number) => {
       >
         <div class="testimonial-header">
           <div class="client-info">
-            <h3>{{ testimonial.clientName }}</h3>
+            <h3><i class="fas fa-user me-2"></i>{{ testimonial.clientName }}</h3>
             <p v-if="testimonial.company" class="company">
-              {{ testimonial.company }}
+              <i class="fas fa-building me-2"></i>{{ testimonial.company }}
             </p>
           </div>
           <div class="testimonial-actions">
@@ -133,48 +136,60 @@ const updateRating = (value: number) => {
               class="btn-icon"
               aria-label="Edit testimonial"
             >
-              ✏️
+              <i class="fas fa-edit"></i>
             </button>
             <button
               @click="deleteTestimonial(testimonial.id)"
               class="btn-icon"
               aria-label="Delete testimonial"
             >
-              🗑️
+              <i class="fas fa-trash-alt"></i>
             </button>
           </div>
         </div>
 
         <div class="rating">
           <span class="stars" :title="`${testimonial.rating} out of 5 stars`">
-            {{ getRatingStars(testimonial.rating) }}
+            <i v-for="n in 5" :key="n" 
+               :class="['fas', n <= testimonial.rating ? 'fa-star' : 'fa-star-o']"
+            ></i>
           </span>
         </div>
 
-        <blockquote class="feedback">"{{ testimonial.feedback }}"</blockquote>
+        <blockquote class="feedback">
+          <i class="fas fa-quote-left quote-icon"></i>
+          {{ testimonial.feedback }}
+        </blockquote>
       </div>
     </div>
 
     <div v-else class="empty-state">
-      <div class="empty-icon">⭐</div>
+      <div class="empty-icon">
+        <i class="fas fa-comment-dots"></i>
+      </div>
       <h3>No Testimonials Added Yet</h3>
       <p>
-        Add testimonials from your clients to build trust with potential new
-        clients.
+        <i class="fas fa-info-circle me-2"></i>
+        Add testimonials from your clients to build trust with potential new clients.
       </p>
     </div>
 
     <div v-if="!showForm" class="add-testimonial">
       <button @click="startAddingTestimonial" class="btn btn-primary">
-        Add Testimonial
+        <i class="fas fa-plus me-2"></i> Add Testimonial
       </button>
     </div>
 
     <div v-if="showForm" class="testimonial-form-container">
-      <h3>{{ isEditing ? "Edit" : "Add" }} Testimonial</h3>
+      <h3>
+        <i class="fas" :class="isEditing ? 'fa-edit' : 'fa-plus-circle'"></i>
+        {{ isEditing ? "Edit" : "Add" }} Testimonial
+      </h3>
       <form @submit.prevent="addTestimonial" class="testimonial-form">
         <div class="form-group">
-          <label for="client-name" class="form-label">Client Name*</label>
+          <label for="client-name" class="form-label">
+            <i class="fas fa-user me-2"></i>Client Name*
+          </label>
           <input
             id="client-name"
             v-model="newTestimonial.clientName"
@@ -184,12 +199,15 @@ const updateRating = (value: number) => {
             placeholder="John Smith"
           />
           <div v-if="errors.clientName" class="form-error">
+            <i class="fas fa-exclamation-circle me-1"></i>
             {{ errors.clientName }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="company" class="form-label">Company</label>
+          <label for="company" class="form-label">
+            <i class="fas fa-building me-2"></i>Company
+          </label>
           <input
             id="company"
             v-model="newTestimonial.company"
@@ -200,7 +218,9 @@ const updateRating = (value: number) => {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Rating</label>
+          <label class="form-label">
+            <i class="fas fa-star me-2"></i>Rating
+          </label>
           <div class="rating-input">
             <button
               v-for="star in 5"
@@ -210,13 +230,15 @@ const updateRating = (value: number) => {
               class="star-btn"
               :class="{ active: star <= newTestimonial.rating }"
             >
-              ★
+              <i class="fas" :class="star <= newTestimonial.rating ? 'fa-star' : 'fa-star-o'"></i>
             </button>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="feedback" class="form-label">Client Feedback*</label>
+          <label for="feedback" class="form-label">
+            <i class="fas fa-comment me-2"></i>Client Feedback*
+          </label>
           <textarea
             id="feedback"
             v-model="newTestimonial.feedback"
@@ -226,15 +248,17 @@ const updateRating = (value: number) => {
             rows="4"
           ></textarea>
           <div v-if="errors.feedback" class="form-error">
+            <i class="fas fa-exclamation-circle me-1"></i>
             {{ errors.feedback }}
           </div>
         </div>
 
         <div class="form-actions">
           <button type="button" @click="cancelForm" class="btn btn-outline">
-            Cancel
+            <i class="fas fa-times me-2"></i>Cancel
           </button>
           <button type="submit" class="btn btn-primary">
+            <i class="fas" :class="isEditing ? 'fa-save' : 'fa-plus'"></i>
             {{ isEditing ? "Update" : "Add" }} Testimonial
           </button>
         </div>
@@ -244,14 +268,20 @@ const updateRating = (value: number) => {
 </template>
 
 <style scoped>
+/* Enhanced UI styles */
 .testimonials {
-  max-width: 800px;
+  max-width: 900px; /* Increased width for better layout */
   margin: 0 auto;
+  padding: var(--space-4);
+  background-color: var(--color-neutral-50);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .subtitle {
-  color: var(--color-neutral-600);
-  margin-bottom: var(--space-4);
+  color: var(--color-neutral-700);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-5);
 }
 
 .testimonials-list {
@@ -351,6 +381,7 @@ const updateRating = (value: number) => {
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   margin-top: var(--space-4);
+  box-shadow: var(--shadow-md);
 }
 
 .testimonial-form {
@@ -395,5 +426,50 @@ const updateRating = (value: number) => {
 .dark-mode .form-input,
 .dark-mode .form-textarea {
   color: white;
+}
+
+.me-1 {
+  margin-right: 0.25rem;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+.quote-icon {
+  color: var(--color-neutral-400);
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
+  color: var(--color-primary);
+}
+
+.btn i {
+  vertical-align: middle;
+}
+
+.form-label i {
+  color: var(--color-primary);
+}
+
+.form-error i {
+  color: var(--color-error);
+}
+
+.stars i {
+  color: var(--color-warning);
+}
+
+.btn-icon i {
+  font-size: 1rem;
+}
+
+.btn-icon:hover i {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
 }
 </style>
