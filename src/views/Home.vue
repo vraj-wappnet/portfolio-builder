@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import {
+  UserCircleIcon,
+  WrenchScrewdriverIcon,
+  PhotoIcon,
+  StarIcon,
+  CalendarDaysIcon,
+  ShareIcon,
+  ArrowRightIcon,
+} from "@heroicons/vue/24/outline";
 
 const router = useRouter();
 
@@ -13,37 +22,37 @@ const features = ref([
     title: "Professional Profile Setup",
     description:
       "Create your personal brand with a professional bio, avatar, and essential contact information",
-    icon: "👤",
+    icon: UserCircleIcon,
   },
   {
     title: "Showcase Your Services",
     description:
       "Highlight your offerings with detailed service descriptions, pricing, and delivery times",
-    icon: "🛠️",
+    icon: WrenchScrewdriverIcon,
   },
   {
     title: "Project Gallery",
     description:
       "Display your best work with an impressive portfolio of projects with images and descriptions",
-    icon: "🖼️",
+    icon: PhotoIcon,
   },
   {
     title: "Client Testimonials",
     description:
       "Build trust with potential clients by showcasing feedback from satisfied customers",
-    icon: "⭐",
+    icon: StarIcon,
   },
   {
     title: "Availability Calendar",
     description:
       "Let clients know when you're available with an interactive schedule display",
-    icon: "📅",
+    icon: CalendarDaysIcon,
   },
   {
     title: "Export & Share",
     description:
       "Download your portfolio as a PDF or share it online with a dedicated link",
-    icon: "🔗",
+    icon: ShareIcon,
   },
 ]);
 </script>
@@ -63,6 +72,7 @@ const features = ref([
           <div class="hero-actions">
             <button @click="startBuilding" class="btn btn-primary">
               Start Building Portfolio Now
+              <ArrowRightIcon class="btn-icon" />
             </button>
           </div>
         </div>
@@ -78,7 +88,9 @@ const features = ref([
             :key="index"
             class="feature-card"
           >
-            <div class="feature-icon">{{ feature.icon }}</div>
+            <div class="feature-icon">
+              <component :is="feature.icon" class="icon" />
+            </div>
             <h3 class="feature-title">{{ feature.title }}</h3>
             <p class="feature-description">{{ feature.description }}</p>
           </div>
@@ -112,6 +124,13 @@ const features = ref([
   margin-top: var(--space-4);
 }
 
+.btn-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
 .section-title {
   text-align: center;
   margin-bottom: var(--space-5);
@@ -141,45 +160,30 @@ const features = ref([
 }
 
 .feature-icon {
-  font-size: 2.5rem;
   margin-bottom: var(--space-3);
+  color: var(--color-primary);
+}
+
+.icon {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .feature-title {
   margin-bottom: var(--space-2);
-  color: var(--color-primary);
+  color: var (--color-primary);
 }
 
 .feature-description {
   color: var(--color-neutral-700);
 }
 
-.cta {
-  margin: var(--space-8) 0;
-  padding: var(--space-6);
-  background-color: var(--color-primary-light);
-  border-radius: var(--radius-lg);
-  color: white;
-  text-align: center;
-}
-
-.cta h2 {
-  margin-bottom: var(--space-3);
-}
-
-.cta p {
-  margin-bottom: var(--space-4);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .dark-mode .feature-card {
   background-color: var(--color-neutral-100);
 }
 
-.dark-mode .cta {
-  background-color: var(--color-primary-dark);
+.dark-mode .feature-icon {
+  color: var(--color-primary-light);
 }
 
 @media (max-width: 768px) {
@@ -189,6 +193,11 @@ const features = ref([
 
   .hero-subtitle {
     font-size: var(--text-lg);
+  }
+
+  .icon {
+    width: 2rem;
+    height: 2rem;
   }
 }
 </style>
