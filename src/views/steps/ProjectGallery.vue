@@ -454,7 +454,6 @@ const startAddingProject = () => {
   color: var(--color-neutral-700);
   margin-bottom: var(--space-3);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-size: var(--text-sm);

@@ -22,7 +22,16 @@ const form = reactive<Profile>({
 const showCropper = ref(false);
 const imageSource = ref("");
 const previewImage = ref(portfolioStore.profile.avatar || "");
-const cropResult = ref(null); // Store cropper result
+interface CropResult {
+  coordinates: {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  };
+}
+
+const cropResult = ref<CropResult | null>(null); // Store cropper result
 
 const handleFileUpload = (event: Event) => {
   const input = event.target as HTMLInputElement;
@@ -60,10 +69,10 @@ const applyCrop = () => {
 
     ctx.drawImage(
       image,
-      cropResult.value.coordinates.left,
-      cropResult.value.coordinates.top,
-      cropResult.value.coordinates.width,
-      cropResult.value.coordinates.height,
+      cropResult.value?.coordinates.left ?? 0,
+      cropResult.value?.coordinates.top ?? 0,
+      cropResult.value?.coordinates.width ?? 0,
+      cropResult.value?.coordinates.height ?? 0,
       0,
       0,
       300,

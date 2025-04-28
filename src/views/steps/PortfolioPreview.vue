@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, computed, ref } from "vue";
+import {  computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { usePortfolioStore } from "../../stores/portfolio";
 

@@ -90,7 +90,6 @@ const copyLink = async () => {
 };
 
 // Generate QR code
-const qrCodeUrl = ref("");
 
 onMounted(() => {
   // Automatically save any unsaved changes
