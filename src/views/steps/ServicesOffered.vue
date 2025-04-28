@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
 import { usePortfolioStore, type Service } from "../../stores/portfolio";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, TrashIcon, WrenchScrewdriverIcon, ClockIcon, CurrencyDollarIcon, DocumentTextIcon } from "@heroicons/vue/24/outline";
 
 const portfolioStore = usePortfolioStore();
 
@@ -133,7 +133,7 @@ const startAddingService = () => {
     <div v-if="services.length > 0" class="services-list">
       <div v-for="service in services" :key="service.id" class="service-card">
         <div class="service-header">
-          <h3>{{ service.title }}</h3>
+          <h3><WrenchScrewdriverIcon class="icon section-icon" /> {{ service.title }}</h3>
           <div class="service-actions">
             <button
               @click="editService(service)"
@@ -154,10 +154,12 @@ const startAddingService = () => {
         <p class="service-description">{{ service.description }}</p>
         <div class="service-meta">
           <div class="service-price">
+            <CurrencyDollarIcon class="icon-sm meta-icon" />
             <strong>{{ service.pricing.amount }} USD</strong>
             / {{ service.pricing.type === "hourly" ? "hour" : "project" }}
           </div>
           <div class="service-delivery">
+            <ClockIcon class="icon-sm meta-icon" />
             <span>Delivery: {{ service.deliveryTime }}</span>
           </div>
         </div>
@@ -165,14 +167,16 @@ const startAddingService = () => {
     </div>
 
     <div v-else class="empty-state">
-      <div class="empty-icon">🛠️</div>
+      <div class="empty-icon">
+        <WrenchScrewdriverIcon class="empty-state-icon" />
+      </div>
       <h3>No Services Added Yet</h3>
       <p>Add your first service to showcase what you offer to clients.</p>
     </div>
 
     <div v-if="!showForm" class="add-service">
       <button @click="startAddingService" class="btn btn-primary">
-        Add Service
+      Add Service
       </button>
     </div>
 
@@ -180,7 +184,9 @@ const startAddingService = () => {
       <h3>{{ isEditing ? "Edit" : "Add" }} Service</h3>
       <form @submit.prevent="addService" class="service-form">
         <div class="form-group">
-          <label for="service-title" class="form-label">Service Title*</label>
+          <label for="service-title" class="form-label">
+            <WrenchScrewdriverIcon class="label-icon" /> Service Title*
+          </label>
           <input
             id="service-title"
             v-model="newService.title"
@@ -193,9 +199,9 @@ const startAddingService = () => {
         </div>
 
         <div class="form-group">
-          <label for="service-description" class="form-label"
-            >Description*</label
-          >
+          <label for="service-description" class="form-label">
+            <DocumentTextIcon class="label-icon" /> Description*
+          </label>
           <textarea
             id="service-description"
             v-model="newService.description"
@@ -214,7 +220,9 @@ const startAddingService = () => {
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Pricing*</label>
+            <label class="form-label">
+              <CurrencyDollarIcon class="label-icon" /> Pricing*
+            </label>
             <div class="pricing-input">
               <div class="pricing-type">
                 <select v-model="newService.pricing.type" class="form-select">
@@ -240,9 +248,9 @@ const startAddingService = () => {
           </div>
 
           <div class="form-group">
-            <label for="service-delivery" class="form-label"
-              >Delivery Time*</label
-            >
+            <label for="service-delivery" class="form-label">
+              <ClockIcon class="label-icon" /> Delivery Time*
+            </label>
             <input
               id="service-delivery"
               v-model="newService.deliveryTime"
@@ -309,6 +317,8 @@ const startAddingService = () => {
 }
 
 .service-header h3 {
+  display: flex;
+  align-items: center;
   margin: 0;
   color: var(--color-primary);
 }
@@ -487,5 +497,43 @@ const startAddingService = () => {
 .dark-mode .form-textarea,
 .dark-mode .form-select {
   color: white;
+}
+
+.icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.meta-icon {
+  margin-right: 0.25rem;
+  vertical-align: middle;
+  color: currentColor;
+}
+
+.section-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  color: var(--color-primary);
+}
+
+.empty-state-icon {
+  width: 4rem;
+  height: 4rem;
+  color: var(--color-primary);
+}
+
+.label-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  color: var(--color-primary);
+}
+
+.dark-mode .section-icon,
+.dark-mode .label-icon {
+  color: var(--color-primary-light);
 }
 </style>

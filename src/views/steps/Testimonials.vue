@@ -96,11 +96,6 @@ const startAddingTestimonial = () => {
   resetForm();
 };
 
-// Star rating display
-const getRatingStars = (rating: number) => {
-  return "★".repeat(rating) + "☆".repeat(5 - rating);
-};
-
 // Update rating
 const updateRating = (value: number) => {
   newTestimonial.rating = value;
