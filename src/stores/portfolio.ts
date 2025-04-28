@@ -37,8 +37,8 @@ export interface Testimonial {
   id: string;
   clientName: string;
   company: string;
-  rating: number;
   feedback: string;
+  rating: number;
 }
 
 export interface AvailabilitySlot {

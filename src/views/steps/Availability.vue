@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {reactive, computed } from "vue";
+import { reactive, computed } from "vue";
 import {
   usePortfolioStore,
   type Availability,
@@ -50,7 +50,6 @@ const communicationOptions = [
 
 // Timezone options (simplified list)
 const timezoneOptions = [
-  "UTC-05:00",
   "UTC-04:00",
   "UTC-03:00",
   "UTC-02:00",
@@ -60,7 +59,6 @@ const timezoneOptions = [
   "UTC+02:00",
   "UTC+03:00",
   "UTC+04:00",
-  "UTC+05:00",
   "UTC+05:30",
 ];
 
