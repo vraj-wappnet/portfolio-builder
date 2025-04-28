@@ -53,7 +53,7 @@ const handleCropChange = (result: any) => {
   cropResult.value = result; // Store the cropper result without closing modal
 };
 
-// Apply crop and save to store
+
 const applyCrop = () => {
   if (!cropResult.value) return;
 

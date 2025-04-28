@@ -1,33 +1,14 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue";
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useThemeStore } from "./stores/themeStore";
 
-const darkMode = ref(false);
 const router = useRouter();
+const themeStore = useThemeStore();
 
 onMounted(() => {
-  // Check if user has a saved dark mode preference
-  const savedDarkMode = localStorage.getItem("darkMode");
-  if (savedDarkMode) {
-    darkMode.value = JSON.parse(savedDarkMode);
-    if (darkMode.value) {
-      document.documentElement.classList.add("dark-mode");
-    }
-  }
+  themeStore.initializeTheme(); // Apply theme on mount
 });
-
-watch(darkMode, (newValue) => {
-  if (newValue) {
-    document.documentElement.classList.add("dark-mode");
-  } else {
-    document.documentElement.classList.remove("dark-mode");
-  }
-  localStorage.setItem("darkMode", JSON.stringify(newValue));
-});
-
-const toggleDarkMode = () => {
-  darkMode.value = !darkMode.value;
-};
 </script>
 
 <template>
@@ -40,10 +21,10 @@ const toggleDarkMode = () => {
       </div>
       <button
         class="theme-toggle"
-        @click="toggleDarkMode"
+        @click="themeStore.toggleDarkMode"
         aria-label="Toggle dark mode"
       >
-        <span v-if="darkMode">🌞</span>
+        <span v-if="themeStore.darkMode">🔆</span>
         <span v-else>🌙</span>
       </button>
     </div>
