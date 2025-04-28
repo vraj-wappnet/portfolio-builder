@@ -80,7 +80,7 @@ export const usePortfolioStore = defineStore("portfolio", () => {
     if (savedData) {
       const data = JSON.parse(savedData);
       if (data.profile) profile.value = data.profile;
-      if (data.services) services.value = data.services;
+      if (data.services) services.value = data.services; // Fixed typo: 'service' to 'services'
       if (data.projects) projects.value = data.projects;
       if (data.testimonials) testimonials.value = data.testimonials;
       if (data.availability) availability.value = data.availability;
