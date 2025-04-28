@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import { usePortfolioStore } from "../../stores/portfolio";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+// Ensure `qrcode` is installed: `npm install qrcode`
+import QRCode from "qrcode";
 
 const portfolioStore = usePortfolioStore();
 
@@ -10,9 +12,12 @@ const portfolioStore = usePortfolioStore();
 const agreedToTerms = ref(false);
 const isGeneratingPdf = ref(false);
 const isGeneratingLink = ref(false);
+const isGeneratingQR = ref(false);
 const generatedLink = ref("");
+const qrCodeUrl = ref("");
 const copySuccess = ref(false);
 const termsError = ref(false);
+const qrError = ref("");
 
 // Generate PDF
 const generatePdf = async () => {
@@ -25,29 +30,34 @@ const generatePdf = async () => {
   isGeneratingPdf.value = true;
 
   try {
-    // Create a temporary element to render the portfolio
     const element = document.getElementById("portfolio-content");
-    if (!element) return;
+    if (!element) throw new Error("Portfolio content element not found");
 
     const pdf = new jsPDF("p", "mm", "a4");
     const canvas = await html2canvas(element);
     const imgData = canvas.toDataURL("image/png");
 
-    // Add title
     pdf.setFontSize(20);
     pdf.text(portfolioStore.profile.fullName || "Portfolio", 105, 15, {
       align: "center",
     });
 
-    // Calculate dimensions to fit the page
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    let pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    // Add content
     pdf.addImage(imgData, "PNG", 0, 25, pdfWidth, pdfHeight);
 
-    // Save the PDF
+    if (qrCodeUrl.value) {
+      pdf.addPage();
+      pdf.setFontSize(16);
+      pdf.text("Scan to View Portfolio Online", 105, 20, { align: "center" });
+      pdf.addImage(qrCodeUrl.value, "PNG", 80, 40, 50, 50);
+      pdf.text(generatedLink.value || "Portfolio Data", 105, 100, {
+        align: "center",
+      });
+    }
+
     pdf.save(`${portfolioStore.profile.fullName || "portfolio"}.pdf`);
   } catch (error) {
     console.error("Error generating PDF:", error);
@@ -56,7 +66,7 @@ const generatePdf = async () => {
   }
 };
 
-// Generate shareable link (mock function)
+// Generate shareable link (mock for development)
 const generateLink = () => {
   if (!agreedToTerms.value) {
     termsError.value = true;
@@ -66,12 +76,63 @@ const generateLink = () => {
   termsError.value = false;
   isGeneratingLink.value = true;
 
-  // Simulate API call to generate a link
   setTimeout(() => {
-    const randomString = Math.random().toString(36).substring(2, 10);
-    generatedLink.value = `https://yourportfolio.example.com/${randomString}`;
-    isGeneratingLink.value = false;
+    try {
+      // Replace with your actual portfolio URL or backend API call
+      generatedLink.value = "http://localhost:5173/portfolio-builder/preview";
+      isGeneratingLink.value = false;
+      generateQRCode();
+    } catch (error) {
+      console.error("Error generating link:", error);
+      qrError.value = "Failed to generate link";
+      isGeneratingLink.value = false;
+    }
   }, 1500);
+};
+
+// Generate QR code
+const generateQRCode = async () => {
+  isGeneratingQR.value = true;
+  qrError.value = "";
+
+  try {
+    let qrContent = generatedLink.value;
+    if (!qrContent) {
+      // Fallback: Encode portfolio data as JSON
+      qrContent = JSON.stringify({
+        profile: portfolioStore.profile,
+        services: portfolioStore.services,
+        projects: portfolioStore.projects,
+        testimonials: portfolioStore.testimonials,
+        availability: portfolioStore.availability,
+      });
+      console.warn("No link provided; encoding portfolio data in QR code");
+    }
+
+    qrCodeUrl.value = await QRCode.toDataURL(qrContent, {
+      width: 200,
+      margin: 2,
+      errorCorrectionLevel: "H", // High error correction for better scanning
+    });
+    console.log("QR code generated for:", qrContent);
+  } catch (error) {
+    console.error("Error generating QR code:", error);
+    qrError.value = "Failed to generate QR code";
+  } finally {
+    isGeneratingQR.value = false;
+  }
+};
+
+// Download QR code as image
+const downloadQRCode = () => {
+  if (!qrCodeUrl.value) return;
+
+  const link = document.createElement("a");
+  link.href = qrCodeUrl.value;
+  link.download = `${
+    portfolioStore.profile.fullName || "portfolio"
+  }-qrcode.png`;
+  link.click();
 };
 
 // Copy link to clipboard
@@ -89,10 +150,7 @@ const copyLink = async () => {
   }
 };
 
-// Generate QR code
-
 onMounted(() => {
-  // Automatically save any unsaved changes
   portfolioStore.saveData();
 });
 </script>
@@ -103,7 +161,6 @@ onMounted(() => {
     <p class="subtitle">Share your portfolio with the world.</p>
 
     <div id="portfolio-content" class="portfolio-content">
-      <!-- Profile Summary -->
       <div class="profile-summary">
         <div v-if="portfolioStore.profile.avatar" class="profile-avatar">
           <img :src="portfolioStore.profile.avatar" alt="Profile Avatar" />
@@ -119,7 +176,6 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Services Summary -->
       <div v-if="portfolioStore.services.length > 0" class="section">
         <h3>Services</h3>
         <ul class="services-list">
@@ -130,7 +186,6 @@ onMounted(() => {
         </ul>
       </div>
 
-      <!-- Projects Summary -->
       <div v-if="portfolioStore.projects.length > 0" class="section">
         <h3>Projects</h3>
         <ul class="projects-list">
@@ -143,7 +198,6 @@ onMounted(() => {
         </ul>
       </div>
 
-      <!-- Testimonials Summary -->
       <div v-if="portfolioStore.testimonials.length > 0" class="section">
         <h3>Client Testimonials</h3>
         <div class="testimonials-summary">
@@ -159,7 +213,6 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Contact & Availability -->
       <div class="section">
         <h3>Contact & Availability</h3>
         <p v-if="portfolioStore.availability.timezone">
@@ -207,16 +260,20 @@ onMounted(() => {
       </div>
 
       <div class="export-option">
-        <h3>Get Shareable Link</h3>
-        <p>Generate a link to share with potential clients.</p>
+        <h3>Get Shareable Link & QR Code</h3>
+        <p>Generate a link and QR code to share with potential clients.</p>
         <button
           @click="generateLink"
           class="btn btn-primary"
-          :disabled="isGeneratingLink"
+          :disabled="isGeneratingLink || isGeneratingQR"
         >
-          <span v-if="isGeneratingLink">Generating...</span>
-          <span v-else>Generate Link</span>
+          <span v-if="isGeneratingLink || isGeneratingQR">Generating...</span>
+          <span v-else>Generate Link & QR</span>
         </button>
+
+        <div v-if="qrError" class="form-error">
+          {{ qrError }}
+        </div>
 
         <div v-if="generatedLink" class="share-link">
           <div class="link-container">
@@ -225,6 +282,13 @@ onMounted(() => {
               {{ copySuccess ? "Copied!" : "Copy" }}
             </button>
           </div>
+        </div>
+
+        <div v-if="qrCodeUrl" class="qr-code">
+          <img :src="qrCodeUrl" alt="Portfolio QR Code" />
+          <button @click="downloadQRCode" class="btn btn-secondary">
+            Download QR Code
+          </button>
         </div>
       </div>
     </div>
@@ -410,6 +474,35 @@ onMounted(() => {
   background-color: var(--color-neutral-300);
 }
 
+.qr-code {
+  margin-top: var(--space-3);
+  text-align: center;
+}
+
+.qr-code img {
+  max-width: 150px;
+  margin-bottom: var(--space-2);
+}
+
+.btn-secondary {
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-neutral-200);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-neutral-300);
+}
+
+.form-error {
+  color: var(--color-error);
+  font-size: var(--text-sm);
+  margin-top: var(--space-2);
+}
+
 .save-data {
   text-align: center;
   color: var(--color-neutral-600);
@@ -441,7 +534,8 @@ onMounted(() => {
   background-color: var(--color-neutral-200);
 }
 
-.dark-mode .btn-copy {
+.dark-mode .btn-copy,
+.dark-mode .btn-secondary {
   color: white;
 }
 </style>
