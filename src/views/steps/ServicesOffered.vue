@@ -57,8 +57,8 @@ const validateForm = () => {
   } else if (newService.description.length < 10) {
     errors.description = "Description must be at least 10 characters";
     isValid = false;
-  } else if (newService.description.length > 500) {
-    errors.description = "Description cannot exceed 500 characters";
+  } else if (newService.description.length > 300) {
+    errors.description = "Description cannot exceed 300 characters";
     isValid = false;
   }
 

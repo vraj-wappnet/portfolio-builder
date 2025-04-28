@@ -62,7 +62,7 @@ const features = ref([
           </p>
           <div class="hero-actions">
             <button @click="startBuilding" class="btn btn-primary">
-              Start Building Now
+              Start Building Portfolio Now
             </button>
           </div>
         </div>
