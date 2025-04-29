@@ -323,7 +323,6 @@ const portfolioStatsSummary = computed(() => {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
-
 .subtitle {
   color: var(--color-neutral-700);
   font-size: var(--text-lg);

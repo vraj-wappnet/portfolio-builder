@@ -312,7 +312,6 @@ onMounted(() => {
             Cancel
           </button>
           <button @click="applyCrop" class="btn btn-primary">Apply Crop</button>
-          <!-- Updated to use applyCrop -->
         </div>
       </div>
     </div>
